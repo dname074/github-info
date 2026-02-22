@@ -17,7 +17,7 @@ public class RepoInfo {
     @JsonProperty("clone_url")
     private String cloneUrl;
     @JsonProperty("stargazers_count")
-    private int starts;
+    private int stars;
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 }
