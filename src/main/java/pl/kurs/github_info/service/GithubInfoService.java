@@ -12,7 +12,7 @@ public class GithubInfoService {
     private final GithubClient client;
     private final RepoInfoMapper mapper;
 
-    public RepoInfoDto getRepoInfo(String owner, String repository) {
+    public RepoInfoDto getRepoInfoByOwnerAndName(String owner, String repository) {
         return mapper.toDto(client.getRepoInfoByOwnerAndName(owner, repository));
     }
 }
