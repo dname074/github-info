@@ -13,7 +13,6 @@ import pl.kurs.github_info.mapper.RepoInfoMapper;
 import pl.kurs.github_info.model.RepoInfo;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -41,7 +40,7 @@ public class GithubInfoServiceTest {
         String owner = "owner";
         String repo = "repo";
         RepoInfo repoInfo = createRepoInfo();
-        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(Optional.of(repoInfo));
+        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(repoInfo);
 
         RepoInfoDto repoInfoDto = service.getRepoInfoByOwnerAndName(owner, repo);
 
@@ -60,7 +59,7 @@ public class GithubInfoServiceTest {
     void getRepoInfoByOwnerAndName_RepoNotFound_RepositoryNotFoundExceptionThrown() {
         String owner = "owner";
         String repo = "repo";
-        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(Optional.empty());
+        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenThrow(new RepositoryNotFoundException("Nie znaleziono podanego repozytorium"));
 
         RepositoryNotFoundException exception = assertThrows(RepositoryNotFoundException.class, () -> service.getRepoInfoByOwnerAndName(owner, repo));
         assertEquals("Nie znaleziono podanego repozytorium", exception.getMessage());
