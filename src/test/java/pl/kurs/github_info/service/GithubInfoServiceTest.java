@@ -5,16 +5,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import pl.kurs.github_info.client.GithubClient;
 import pl.kurs.github_info.dto.RepoInfoDto;
+import pl.kurs.github_info.exception.RepositoryNotFoundException;
 import pl.kurs.github_info.mapper.RepoInfoMapper;
 import pl.kurs.github_info.model.RepoInfo;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class GithubInfoServiceTest {
@@ -34,7 +41,7 @@ public class GithubInfoServiceTest {
         String owner = "owner";
         String repo = "repo";
         RepoInfo repoInfo = createRepoInfo();
-        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(repoInfo);
+        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(Optional.of(repoInfo));
 
         RepoInfoDto repoInfoDto = service.getRepoInfoByOwnerAndName(owner, repo);
 
@@ -45,6 +52,21 @@ public class GithubInfoServiceTest {
                 () -> assertEquals(LocalDateTime.of(2015, 8, 15, 20,0,0), repoInfoDto.createdAt()),
                 () -> assertEquals(1, repoInfoDto.stars())
         );
+        verify(client,times(1)).getRepoInfoByOwnerAndName("owner", "repo");
+        verifyNoMoreInteractions(client);
+    }
+
+    @Test
+    void getRepoInfoByOwnerAndName_RepoNotFound_RepositoryNotFoundExceptionThrown() {
+        String owner = "owner";
+        String repo = "repo";
+        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(Optional.empty());
+
+        RepositoryNotFoundException exception = assertThrows(RepositoryNotFoundException.class, () -> service.getRepoInfoByOwnerAndName(owner, repo));
+        assertEquals("Nie znaleziono podanego repozytorium", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        verify(client, times(1)).getRepoInfoByOwnerAndName("owner", "repo");
+        verifyNoMoreInteractions(client);
     }
 
     private RepoInfo createRepoInfo() {
