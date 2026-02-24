@@ -4,9 +4,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class GithubInfoAppException extends RuntimeException {
+public class GithubInfoException extends RuntimeException {
     private final HttpStatus status;
-    public GithubInfoAppException(String message, HttpStatus status) {
+    public GithubInfoException(String message, HttpStatus status) {
         super(message);
         this.status = status;
     }

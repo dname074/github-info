@@ -36,13 +36,13 @@ public class GithubInfoServiceTest {
     }
 
     @Test
-    void getRepoInfoByOwnerAndName_DataCorrect_RepoInfoDtoReturned() {
+    void getRepository_DataCorrect_RepoInfoDtoReturned() {
         String owner = "owner";
         String repo = "repo";
         RepoInfo repoInfo = createRepoInfo();
         when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(repoInfo);
 
-        RepoInfoDto repoInfoDto = service.getRepoInfoByOwnerAndName(owner, repo);
+        RepoInfoDto repoInfoDto = service.getRepository(owner, repo);
 
         Assertions.assertAll(
                 () -> assertEquals("fullName", repoInfoDto.fullName()),
@@ -56,12 +56,12 @@ public class GithubInfoServiceTest {
     }
 
     @Test
-    void getRepoInfoByOwnerAndName_RepoNotFound_RepositoryNotFoundExceptionThrown() {
+    void getRepository_RepoNotFound_RepositoryNotFoundExceptionThrown() {
         String owner = "owner";
         String repo = "repo";
         when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenThrow(new RepositoryNotFoundException("Nie znaleziono podanego repozytorium"));
 
-        RepositoryNotFoundException exception = assertThrows(RepositoryNotFoundException.class, () -> service.getRepoInfoByOwnerAndName(owner, repo));
+        RepositoryNotFoundException exception = assertThrows(RepositoryNotFoundException.class, () -> service.getRepository(owner, repo));
         assertEquals("Nie znaleziono podanego repozytorium", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         verify(client, times(1)).getRepoInfoByOwnerAndName("owner", "repo");

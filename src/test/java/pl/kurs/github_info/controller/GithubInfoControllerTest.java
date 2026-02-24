@@ -31,35 +31,35 @@ public class GithubInfoControllerTest {
     MockMvc mockMvc;
 
     @Test
-    void getRepoInfoByOwnerAndName_DataCorrect_RepoInfoReturnedInJson() throws Exception {
+    void getRepository_DataCorrect_RepoInfoReturnedInJson() throws Exception {
         String owner = "owner";
-        String repo = "repo";
+        String repositoryName = "repo";
         RepoInfoDto repoInfoDto = new RepoInfoDto("fullName", null, "url", 1, LocalDateTime.of(2015, 8, 15, 20, 0, 0));
-        when(service.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(repoInfoDto);
+        when(service.getRepository(anyString(), anyString())).thenReturn(repoInfoDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{owner}/{repo}", owner, repo))
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{owner}/{repositoryName}", owner, repositoryName))
                 .andDo(print())
                 .andExpect(jsonPath("$.fullName").value("fullName"))
                 .andExpect(jsonPath("$.description").doesNotExist())
                 .andExpect(jsonPath("$.cloneUrl").value("url"))
                 .andExpect(jsonPath("$.stars").value(1))
                 .andExpect(jsonPath("$.createdAt").value("2015-08-15T20:00:00"));
-        verify(service,times(1)).getRepoInfoByOwnerAndName("owner", "repo");
+        verify(service,times(1)).getRepository("owner", "repo");
         verifyNoMoreInteractions(service);
     }
 
     @Test
-    void getRepoInfoByOwnerAndName_RepositoryNotFoundExceptionThrown_404Returned() throws Exception {
+    void getRepository_RepositoryNotFoundExceptionThrown_404Returned() throws Exception {
         String owner = "owner";
-        String repo = "repo";
-        when(service.getRepoInfoByOwnerAndName(anyString(),anyString())).thenThrow(new RepositoryNotFoundException("Nie znaleziono podanego repozytorium"));
+        String repositoryName = "repo";
+        when(service.getRepository(anyString(),anyString())).thenThrow(new RepositoryNotFoundException("Nie znaleziono podanego repozytorium"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{owner}/{repo}", owner, repo))
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{owner}/{repositoryName}", owner, repositoryName))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Nie znaleziono podanego repozytorium"))
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"));
-        verify(service,times(1)).getRepoInfoByOwnerAndName("owner", "repo");
+        verify(service,times(1)).getRepository("owner", "repo");
         verifyNoMoreInteractions(service);
     }
 }

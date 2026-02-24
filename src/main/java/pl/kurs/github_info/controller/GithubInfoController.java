@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.kurs.github_info.dto.GithubInfoExceptionDto;
+import pl.kurs.github_info.dto.ErrorMessageDto;
 import pl.kurs.github_info.dto.RepoInfoDto;
 import pl.kurs.github_info.service.GithubInfoService;
 
@@ -35,13 +35,13 @@ public class GithubInfoController {
             @ApiResponse(responseCode = "404", description = "Repository not found",
             content = {
                     @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = GithubInfoExceptionDto.class))
+                    schema = @Schema(implementation = ErrorMessageDto.class))
             })
     }
     )
-    @GetMapping("/{owner}/{repo}")
-    public RepoInfoDto getRepoInfoByOwnerAndName(@PathVariable @NotBlank String owner, @PathVariable @NotBlank String repo) {
-        log.info("Received GET /repositories/{}/{} request", owner, repo);
-        return service.getRepoInfoByOwnerAndName(owner, repo);
+    @GetMapping("/{owner}/{repositoryName}")
+    public RepoInfoDto getRepository(@PathVariable @NotBlank String owner, @PathVariable @NotBlank String repositoryName) {
+        log.info("Received GET /repositories/{}/{} request", owner, repositoryName);
+        return service.getRepository(owner, repositoryName);
     }
 }
