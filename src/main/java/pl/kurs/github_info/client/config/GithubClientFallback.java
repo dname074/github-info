@@ -9,7 +9,7 @@ import pl.kurs.github_info.model.RepoInfo;
 @Slf4j
 public class GithubClientFallback implements GithubClient {
     @Override
-    public RepoInfo getRepoInfoByOwnerAndName(String owner, String repo) {
+    public RepoInfo getRepository(String owner, String repo) {
         log.info("Fallback occured");
         return new RepoInfo();
     }

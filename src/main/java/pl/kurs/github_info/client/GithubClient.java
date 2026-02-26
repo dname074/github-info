@@ -8,11 +8,10 @@ import pl.kurs.github_info.client.config.GithubClientFallback;
 import pl.kurs.github_info.model.RepoInfo;
 
 @FeignClient(name = "githubClient",
-        url = "https://api.github.com/",
         configuration = GithubClientConfiguration.class,
         fallback = GithubClientFallback.class
 )
 public interface GithubClient {
     @GetMapping("/repos/{owner}/{repo}")
-    RepoInfo getRepoInfoByOwnerAndName(@PathVariable("owner") String owner, @PathVariable("repo") String repo);
+    RepoInfo getRepository(@PathVariable("owner") String owner, @PathVariable("repo") String repositoryName);
 }

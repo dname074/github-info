@@ -40,7 +40,7 @@ public class GithubInfoServiceTest {
         String owner = "owner";
         String repo = "repo";
         RepoInfo repoInfo = createRepoInfo();
-        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenReturn(repoInfo);
+        when(client.getRepository(anyString(), anyString())).thenReturn(repoInfo);
 
         RepoInfoDto repoInfoDto = service.getRepository(owner, repo);
 
@@ -51,7 +51,7 @@ public class GithubInfoServiceTest {
                 () -> assertEquals(LocalDateTime.of(2015, 8, 15, 20,0,0), repoInfoDto.createdAt()),
                 () -> assertEquals(1, repoInfoDto.stars())
         );
-        verify(client,times(1)).getRepoInfoByOwnerAndName("owner", "repo");
+        verify(client,times(1)).getRepository("owner", "repo");
         verifyNoMoreInteractions(client);
     }
 
@@ -59,12 +59,12 @@ public class GithubInfoServiceTest {
     void getRepository_RepoNotFound_RepositoryNotFoundExceptionThrown() {
         String owner = "owner";
         String repo = "repo";
-        when(client.getRepoInfoByOwnerAndName(anyString(), anyString())).thenThrow(new RepositoryNotFoundException("Nie znaleziono podanego repozytorium"));
+        when(client.getRepository(anyString(), anyString())).thenThrow(new RepositoryNotFoundException("Nie znaleziono podanego repozytorium"));
 
         RepositoryNotFoundException exception = assertThrows(RepositoryNotFoundException.class, () -> service.getRepository(owner, repo));
         assertEquals("Nie znaleziono podanego repozytorium", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        verify(client, times(1)).getRepoInfoByOwnerAndName("owner", "repo");
+        verify(client, times(1)).getRepository("owner", "repo");
         verifyNoMoreInteractions(client);
     }
 
