@@ -59,7 +59,7 @@ public class GithubClientTest {
     }
 
     @Test
-    void getRepository_ResponseStatus503_RetryableExceptionThrown() {
+    void getRepository_ResponseStatus503_3RetriesDoneAndRepoInfoReturned() {
         githubClientMock.stubFor(get(urlEqualTo("/repos/owner/repoName"))
                 .willReturn(aResponse()
                         .withStatus(503)));

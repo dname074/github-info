@@ -11,6 +11,7 @@ public class GithubClientConfiguration {
     public ErrorDecoder errorDecoder() {
         return new CustomErrorDecoder();
     }
+
     @Bean
     public Retryer retryer() {
         return new Retryer.Default(100, 1000, 3);
