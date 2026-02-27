@@ -28,15 +28,15 @@ public class GithubInfoController {
     @Operation(summary = "Get informations about github repository by owner name and repo name")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Repository exists, data returned",
-            content = {
-                    @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = RepoInfoDto.class))
-            }),
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = RepoInfoDto.class))
+                    }),
             @ApiResponse(responseCode = "404", description = "Repository not found",
-            content = {
-                    @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorMessageDto.class))
-            })
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessageDto.class))
+                    })
     }
     )
     @GetMapping("/{owner}/{repositoryName}")

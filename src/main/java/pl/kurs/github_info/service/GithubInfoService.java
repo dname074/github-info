@@ -16,7 +16,7 @@ public class GithubInfoService {
 
     public RepoInfoDto getRepository(String owner, String repository) {
         log.info("Process of getting informations about github repository started");
-        RepoInfoDto repoInfoDto = mapper.toDto(client.getRepoInfoByOwnerAndName(owner, repository));
+        RepoInfoDto repoInfoDto = mapper.toDto(client.getRepository(owner, repository));
         log.info("Process of getting informations about github repository ended");
         return repoInfoDto;
     }
