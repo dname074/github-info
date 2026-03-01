@@ -39,11 +39,11 @@ public class GithubInfoControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{owner}/{repositoryName}", owner, repositoryName))
                 .andDo(print())
-                .andExpect(jsonPath("$.fullName").value("fullName"))
+                .andExpect(jsonPath("$.full_name").value("fullName"))
                 .andExpect(jsonPath("$.description").doesNotExist())
-                .andExpect(jsonPath("$.cloneUrl").value("url"))
-                .andExpect(jsonPath("$.stars").value(1))
-                .andExpect(jsonPath("$.createdAt").value("2015-08-15T20:00:00"));
+                .andExpect(jsonPath("$.clone_url").value("url"))
+                .andExpect(jsonPath("$.stargazers_count").value(1))
+                .andExpect(jsonPath("$.created_at").value("2015-08-15T20:00:00"));
         verify(service,times(1)).getRepository("owner", "repo");
         verifyNoMoreInteractions(service);
     }

@@ -3,6 +3,7 @@ package pl.kurs.github_info.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,6 +39,11 @@ public class GithubInfoControllerTest {
     @Autowired
     RepoInfoMapper mapper;
 
+    @BeforeEach
+    void setup() {
+        githubClientMock.resetRequests();
+    }
+
     @Test
     void getRepository_CorrectDataPassed_RepoInfoDtoReturned() throws Exception {
         RepoInfoDto repoInfoDto = new RepoInfoDto("owner/repoName", "description", "cloneUrl", 1,
@@ -51,11 +57,11 @@ public class GithubInfoControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner/repoName"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.fullName").value("owner/repoName"))
+                .andExpect(jsonPath("$.full_name").value("owner/repoName"))
                 .andExpect(jsonPath("$.description").value("description"))
-                .andExpect(jsonPath("$.cloneUrl").value("cloneUrl"))
-                .andExpect(jsonPath("$.stars").value(1))
-                .andExpect(jsonPath("$.createdAt").value("2015-10-25T20:00:00"));
+                .andExpect(jsonPath("$.clone_url").value("cloneUrl"))
+                .andExpect(jsonPath("$.stargazers_count").value(1))
+                .andExpect(jsonPath("$.created_at").value("2015-10-25T20:00:00"));
         verify(1, getRequestedFor(urlEqualTo("/repos/owner/repoName")));
     }
 
@@ -69,11 +75,11 @@ public class GithubInfoControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner/repoName"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.fullName").isEmpty())
+                .andExpect(jsonPath("$.full_name").isEmpty())
                 .andExpect(jsonPath("$.description").isEmpty())
-                .andExpect(jsonPath("$.cloneUrl").isEmpty())
-                .andExpect(jsonPath("$.stars").isEmpty())
-                .andExpect(jsonPath("$.createdAt").isEmpty());
+                .andExpect(jsonPath("$.clone_url").isEmpty())
+                .andExpect(jsonPath("$.stargazers_count").isEmpty())
+                .andExpect(jsonPath("$.created_at").isEmpty());
         verify(1, getRequestedFor(urlEqualTo("/repos/owner/repoName")));
     }
 }

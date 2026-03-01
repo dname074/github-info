@@ -50,7 +50,7 @@ public class GithubClientTest {
                 () -> assertEquals("cloneUrl", result.cloneUrl()),
                 () -> assertEquals("description", result.description()),
                 () -> assertEquals(1, result.stars()),
-                () -> assertEquals(LocalDateTime.of(2001, 10, 15, 20, 0, 0), result.createdAt())
+                () -> assertEquals(LocalDateTime.of(2015, 10, 25, 20, 0, 0), result.createdAt())
         );
         verify(getRequestedFor(urlEqualTo("/repos/owner/repoName")));
     }
