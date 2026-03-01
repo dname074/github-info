@@ -25,6 +25,14 @@ public class RepoInfo {
     private Integer stars;
     private LocalDateTime createdAt;
 
+    public void update(RepoInfo repoInfo) {
+        this.fullName = repoInfo.getFullName();
+        this.description = repoInfo.getDescription();
+        this.cloneUrl = repoInfo.getCloneUrl();
+        this.stars = repoInfo.getStars();
+        this.createdAt = repoInfo.getCreatedAt();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

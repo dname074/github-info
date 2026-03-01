@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.kurs.github_info.dto.ErrorMessageDto;
@@ -41,14 +43,33 @@ public class GithubInfoController {
     }
     )
     @GetMapping("/{owner}/{repositoryName}")
-    public RepoInfoDto getRepository(@PathVariable @NotBlank String owner, @PathVariable @NotBlank String repositoryName) {
+    public RepoInfoDto getRepository(@PathVariable @NotBlank String owner,
+                                     @PathVariable @NotBlank String repositoryName) {
         log.info("Received GET /repositories/{}/{} request", owner, repositoryName);
         return service.getRepository(owner, repositoryName);
+    }
+
+    @GetMapping("/local/{owner}/{repositoryName}")
+    public RepoInfoDto getRepositoryFromLocal(@PathVariable @NotBlank String owner,
+                                              @PathVariable @NotBlank String repositoryName) {
+        return service.getRepositoryFromLocal(owner, repositoryName);
     }
 
     @PostMapping("/{owner}/{repositoryName}")
     public RepoInfoDto saveRepositoryToLocal(@PathVariable @NotBlank String owner,
                                              @PathVariable @NotBlank String repositoryName) {
         return service.saveRepositoryToLocal(owner, repositoryName);
+    }
+
+    @PutMapping("/{owner}/{repositoryName}")
+    public RepoInfoDto updateRepositoryFromLocal(@PathVariable @NotBlank String owner,
+                                               @PathVariable @NotBlank String repositoryName) {
+        return service.updateRepositoryFromLocal(owner, repositoryName);
+    }
+
+    @DeleteMapping("/{owner}/{repositoryName}")
+    public RepoInfoDto deleteRepositoryFromLocal(@PathVariable @NotBlank String owner,
+                                                 @PathVariable @NotBlank String repositoryName) {
+        return service.deleteRepositoryFromLocal(owner, repositoryName);
     }
 }
