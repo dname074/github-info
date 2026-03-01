@@ -10,7 +10,7 @@ import pl.kurs.github_info.client.GithubClient;
 import pl.kurs.github_info.dto.RepoInfoDto;
 import pl.kurs.github_info.exception.RepositoryNotFoundException;
 import pl.kurs.github_info.mapper.RepoInfoMapper;
-import pl.kurs.github_info.model.RepoInfo;
+import pl.kurs.github_info.repository.GithubInfoRepository;
 
 import java.time.LocalDateTime;
 
@@ -27,19 +27,21 @@ public class GithubInfoServiceTest {
     GithubClient client;
     RepoInfoMapper mapper;
     GithubInfoService service;
+    GithubInfoRepository repository;
 
     @BeforeEach
     void setup() {
         this.client = Mockito.mock(GithubClient.class);
+        this.repository = Mockito.mock(GithubInfoRepository.class);
         this.mapper = Mappers.getMapper(RepoInfoMapper.class);
-        this.service = new GithubInfoService(client, mapper);
+        this.service = new GithubInfoService(client, mapper, repository);
     }
 
     @Test
     void getRepository_DataCorrect_RepoInfoDtoReturned() {
         String owner = "owner";
         String repo = "repo";
-        RepoInfo repoInfo = createRepoInfo();
+        RepoInfoDto repoInfo = createRepoInfo();
         when(client.getRepository(anyString(), anyString())).thenReturn(repoInfo);
 
         RepoInfoDto repoInfoDto = service.getRepository(owner, repo);
@@ -68,13 +70,9 @@ public class GithubInfoServiceTest {
         verifyNoMoreInteractions(client);
     }
 
-    private RepoInfo createRepoInfo() {
-        RepoInfo repoInfo = new RepoInfo();
-        repoInfo.setFullName("fullName");
-        repoInfo.setDescription(null);
-        repoInfo.setCloneUrl("url");
-        repoInfo.setCreatedAt(LocalDateTime.of(2015, 8,15, 20,0,0));
-        repoInfo.setStars(1);
-        return repoInfo;
+    private RepoInfoDto createRepoInfo() {
+        return new RepoInfoDto(
+                "fullName", null, "url", 1,
+                LocalDateTime.of(2015, 8,15, 20,0,0));
     }
 }
