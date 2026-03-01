@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import pl.kurs.github_info.client.config.GithubClientConfiguration;
 import pl.kurs.github_info.client.config.GithubClientFallback;
-import pl.kurs.github_info.model.RepoInfo;
+import pl.kurs.github_info.dto.RepoInfoDto;
 
 @FeignClient(name = "githubClient",
         configuration = GithubClientConfiguration.class,
@@ -13,5 +13,5 @@ import pl.kurs.github_info.model.RepoInfo;
 )
 public interface GithubClient {
     @GetMapping("/repos/{owner}/{repo}")
-    RepoInfo getRepository(@PathVariable("owner") String owner, @PathVariable("repo") String repositoryName);
+    RepoInfoDto getRepository(@PathVariable("owner") String owner, @PathVariable("repo") String repositoryName);
 }

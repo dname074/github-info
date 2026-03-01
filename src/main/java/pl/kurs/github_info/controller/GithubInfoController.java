@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.kurs.github_info.dto.ErrorMessageDto;
@@ -43,5 +44,11 @@ public class GithubInfoController {
     public RepoInfoDto getRepository(@PathVariable @NotBlank String owner, @PathVariable @NotBlank String repositoryName) {
         log.info("Received GET /repositories/{}/{} request", owner, repositoryName);
         return service.getRepository(owner, repositoryName);
+    }
+
+    @PostMapping("/{owner}/{repositoryName}")
+    public RepoInfoDto saveRepositoryToLocal(@PathVariable @NotBlank String owner,
+                                             @PathVariable @NotBlank String repositoryName) {
+        return service.saveRepositoryToLocal(owner, repositoryName);
     }
 }
