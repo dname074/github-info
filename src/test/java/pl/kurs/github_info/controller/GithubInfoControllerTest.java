@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -60,6 +61,96 @@ public class GithubInfoControllerTest {
                 .andExpect(jsonPath("$.message").value("Nie znaleziono podanego repozytorium"))
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"));
         verify(service,times(1)).getRepository("owner", "repo");
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void getRepositoryFromLocal_DataCorrect_RepoInfoDtoJsonReturned() throws Exception {
+        String owner = "owner";
+        String repositoryName = "repo";
+        RepoInfoDto repoInfoDto = new RepoInfoDto("fullName", null, "url", 1, LocalDateTime.of(2015, 8, 15, 20, 0, 0));
+        when(service.getRepositoryFromLocal(owner, repositoryName)).thenReturn(repoInfoDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/local/{owner}/{repositoryName}", owner, repositoryName))
+                .andDo(print())
+                .andExpect(jsonPath("$.full_name").value("fullName"))
+                .andExpect(jsonPath("$.description").doesNotExist())
+                .andExpect(jsonPath("$.clone_url").value("url"))
+                .andExpect(jsonPath("$.stargazers_count").value(1))
+                .andExpect(jsonPath("$.created_at").value("2015-08-15T20:00:00"));
+        verify(service,times(1)).getRepositoryFromLocal("owner", "repo");
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void getRepositoryFromLocal_RepositoryNotFoundExceptionThrown_404Returned() throws Exception {
+        String owner = "owner";
+        String repositoryName = "repo";
+        when(service.getRepositoryFromLocal(owner,repositoryName)).thenThrow(new RepositoryNotFoundException("Nie znaleziono podanego repozytorium w lokalnej bazie danych"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/local/{owner}/{repositoryName}", owner, repositoryName))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Nie znaleziono podanego repozytorium w lokalnej bazie danych"))
+                .andExpect(jsonPath("$.status").value("NOT_FOUND"));
+        verify(service,times(1)).getRepositoryFromLocal("owner", "repo");
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void saveRepositoryToLocal_RepositoryFound_RepoInfoDtoJsonReturned() throws Exception {
+        String owner = "owner";
+        String repositoryName = "repo";
+        RepoInfoDto repoInfoDto = new RepoInfoDto("fullName", null, "url", 1, LocalDateTime.of(2015, 8, 15, 20, 0, 0));
+        when(service.saveRepositoryToLocal(owner, repositoryName)).thenReturn(repoInfoDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/repositories/{owner}/{repositoryName}", owner, repositoryName)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$.full_name").value("fullName"))
+                .andExpect(jsonPath("$.description").doesNotExist())
+                .andExpect(jsonPath("$.clone_url").value("url"))
+                .andExpect(jsonPath("$.stargazers_count").value(1))
+                .andExpect(jsonPath("$.created_at").value("2015-08-15T20:00:00"));
+        verify(service,times(1)).saveRepositoryToLocal("owner", "repo");
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void updateRepositoryFromLocal_RepositoryFound_RepoInfoDtoJsonReturned() throws Exception {
+        String owner = "owner";
+        String repositoryName = "repo";
+        RepoInfoDto repoInfoDto = new RepoInfoDto("fullName", null, "url", 1, LocalDateTime.of(2015, 8, 15, 20, 0, 0));
+        when(service.updateRepositoryFromLocal(owner, repositoryName)).thenReturn(repoInfoDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/repositories/{owner}/{repositoryName}", owner, repositoryName)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$.full_name").value("fullName"))
+                .andExpect(jsonPath("$.description").doesNotExist())
+                .andExpect(jsonPath("$.clone_url").value("url"))
+                .andExpect(jsonPath("$.stargazers_count").value(1))
+                .andExpect(jsonPath("$.created_at").value("2015-08-15T20:00:00"));
+        verify(service,times(1)).updateRepositoryFromLocal("owner", "repo");
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void deleteRepositoryFromLocal_RepositoryFound_RepoInfoDtoJsonReturned() throws Exception {
+        String owner = "owner";
+        String repositoryName = "repo";
+        RepoInfoDto repoInfoDto = new RepoInfoDto("fullName", null, "url", 1, LocalDateTime.of(2015, 8, 15, 20, 0, 0));
+        when(service.deleteRepositoryFromLocal(owner, repositoryName)).thenReturn(repoInfoDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/repositories/{owner}/{repositoryName}", owner, repositoryName)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$.full_name").value("fullName"))
+                .andExpect(jsonPath("$.description").doesNotExist())
+                .andExpect(jsonPath("$.clone_url").value("url"))
+                .andExpect(jsonPath("$.stargazers_count").value(1))
+                .andExpect(jsonPath("$.created_at").value("2015-08-15T20:00:00"));
+        verify(service,times(1)).deleteRepositoryFromLocal("owner", "repo");
         verifyNoMoreInteractions(service);
     }
 }
