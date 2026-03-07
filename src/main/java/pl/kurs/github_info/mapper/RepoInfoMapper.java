@@ -7,4 +7,5 @@ import pl.kurs.github_info.model.RepoInfo;
 @Mapper(componentModel = "spring")
 public interface RepoInfoMapper {
     RepoInfoDto toDto(RepoInfo repoInfo);
+    RepoInfo toEntity(RepoInfoDto repoInfoDto);
 }
