@@ -33,6 +33,14 @@ public class RepoInfo {
         this.createdAt = repoInfo.getCreatedAt();
     }
 
+    public boolean areFieldsNull() {
+        return fullName == null &&
+                description == null &&
+                cloneUrl == null &&
+                stars == null &&
+                createdAt == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

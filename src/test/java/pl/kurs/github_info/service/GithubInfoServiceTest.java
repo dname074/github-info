@@ -140,7 +140,6 @@ public class GithubInfoServiceTest {
         RepoInfoDto repoInfoDto = new RepoInfoDto(null, null, null, null, null);
         RepoInfo repoInfo = mapper.toEntity(repoInfoDto);
         when(client.getRepository(owner, repoName)).thenReturn(repoInfoDto);
-        when(repository.save(any())).thenReturn(repoInfo);
         RepoInfoDto result = service.saveRepositoryToLocal(owner, repoName);
         Assertions.assertAll(
                 () -> assertNull(result.fullName()),
@@ -149,9 +148,8 @@ public class GithubInfoServiceTest {
                 () -> assertNull(result.stars()),
                 () -> assertNull(result.createdAt())
         );
-        verify(repository, times(1)).save(argThat(new RepoArgumentMatcher(repoInfo)));
         verify(client, times(1)).getRepository("owner", "repoName");
-        verifyNoMoreInteractions(repository);
+        verifyNoInteractions(repository);
         verifyNoMoreInteractions(client);
     }
 

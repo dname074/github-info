@@ -1,5 +1,6 @@
 package pl.kurs.github_info.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,24 +33,31 @@ public class GithubInfoService {
         return mapper.toDto(repoInfo);
     }
 
+    @Transactional
     public RepoInfoDto saveRepositoryToLocal(String owner, String repositoryName) {
         log.info("Process of saving information about github repository to local device started");
         RepoInfo repoInfo = mapper.toEntity(client.getRepository(owner, repositoryName));
-        repository.save(repoInfo);
+        if (!repoInfo.areFieldsNull()) {
+            repository.save(repoInfo);
+        }
         log.info("Process of saving information about github repository to local device ended");
         return mapper.toDto(repoInfo);
     }
 
+    @Transactional
     public RepoInfoDto updateRepositoryFromLocal(String owner, String repositoryName) {
         log.info("Process of updating information about github repository to local device started");
         RepoInfo repoInfo = findRepositoryFromLocal(owner, repositoryName);
         RepoInfo updatedRepoInfo = mapper.toEntity(client.getRepository(owner, repositoryName));
-        repoInfo.update(updatedRepoInfo);
-        repository.save(repoInfo);
+        if (!repoInfo.areFieldsNull()) {
+            repoInfo.update(updatedRepoInfo);
+            repository.save(repoInfo);
+        }
         log.info("Process of updating information about github repository to local device ended");
         return mapper.toDto(repoInfo);
     }
 
+    @Transactional
     public RepoInfoDto deleteRepositoryFromLocal(String owner, String repositoryName) {
         log.info("Process of deleting information about github repository from local device started");
         RepoInfo repoInfo = findRepositoryFromLocal(owner, repositoryName);
