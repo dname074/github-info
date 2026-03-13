@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+  github-proxy:
+    container_name: github-proxy
+    image: github-proxy:latest
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - docker-network
+    depends_on:
+      - postgresql
+  postgresql:
+    container_name: postgresql
+    image: postgres:18-alpine3.22
+    ports:
+      - 5432:5432
+    networks:
+      - docker-network
+    environment:
+      - POSTGRES_DB=github-info
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=user
+  pgadmin4:
+    image: elestio/pgadmin:REL-9_13
+    ports:
+      - 8081:8081
+    networks:
+      - docker-network
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=email@onet.pl
+      - PGADMIN_DEFAULT_PASSWORD=password
+      - PGADMIN_LISTEN_PORT=8081
+    depends_on:
+      - postgresql
+networks:
+  docker-network:
+    driver: bridge

@@ -1,9 +1,11 @@
 package pl.kurs.github_info.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,10 +17,12 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @Entity
+@Table(name = "Repo_info")
 public class RepoInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "fullName", unique = true)
     private String fullName;
     private String description;
     private String cloneUrl;
