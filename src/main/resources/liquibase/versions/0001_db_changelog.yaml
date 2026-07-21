@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+    id: 1
+    author: damian
+    comment: "Tabela z informacjami o repozytorium z githuba"
+    preConditions:
+      - onFail: HALT
+    changes:
+      - createTable:
+          tableName: Repo_info
+          columns:
+            - column:
+                name: id
+                type: bigint
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  primaryKeyName: pk_users_id
+            - column:
+                name: fullName
+                type: varchar(255)
+                constraints:
+                  unique: true
+                  uniqueConstraintName: uq_users_fullName
+            - column:
+                name: description
+                type: varchar(255)
+            - column:
+                name: cloneUrl
+                type: varchar(255)
+            - column:
+                name: stars
+                type: int
+            - column:
+                name: createdAt
+                type: datetime
